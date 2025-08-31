@@ -43,7 +43,8 @@ function Show-Menu {
 
     Write-Host (" " * $leftPadding + "1. IDM Reset") -ForegroundColor White
     Write-Host (" " * $leftPadding + "2. Windows Activator") -ForegroundColor White
-    Write-Host (" " * $leftPadding + "3. Exit") -ForegroundColor White
+    Write-Host (" " * $leftPadding + "3. Microsoft Deployment Tools") -ForegroundColor White
+    Write-Host (" " * $leftPadding + "4. Exit") -ForegroundColor White
     Write-Host ""
 }
 
@@ -274,6 +275,43 @@ do {
             $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
         }
         '3' {
+    Clear-Host
+    Show-ASCIIArt
+
+    # Show progress with cancellation detection
+    $completed = Show-Progress -Activity "Preparing download..." -Seconds 2 -Color "Magenta"
+
+    if (-not $completed -or $global:CancellationRequested) {
+        # Center cancellation message
+        $cancelText = "Download was cancelled. No changes were made."
+        $cancelPadding = [math]::Max(0, [int](($width - $cancelText.Length) / 2))
+        Write-Host "`n" + (" " * $cancelPadding + $cancelText) -ForegroundColor Yellow
+    }
+    else {
+        # Define download URL and destination
+        $url = "https://download.microsoft.com/download/6c1eeb25-cf8b-41d9-8d0d-cc1dbc032140/officedeploymenttool_19029-20136.exe"
+        $destination = "$env:USERPROFILE\Downloads\officedeploymenttool_19029-20136.exe"
+
+        try {
+            # Download the file
+            Write-Host "`nDownloading file..." -ForegroundColor Cyan
+            Invoke-WebRequest -Uri $url -OutFile $destination -UseBasicParsing
+            Write-Host "`nDownload completed successfully!" -ForegroundColor Green
+            Write-Host "`nFile saved to: C:\Users\Your_UserName\Downloads"
+        }
+        catch {
+            Write-Host "`nFailed to download the file: $_" -ForegroundColor Red
+        }
+    }
+
+    # Center continue message
+    $continueText = "Press any key to continue..."
+    $continuePadding = [math]::Max(0, [int](($width - $continueText.Length) / 2))
+    Write-Host "`n" + (" " * $continuePadding + $continueText) -ForegroundColor White
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+}
+
+        '4' {
             Clear-Host
             $exitText = "Thank you for using! Goodbye!"
             $exitPadding = [math]::Max(0, [int](($width - $exitText.Length) / 2))
