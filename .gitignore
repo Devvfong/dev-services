@@ -1,0 +1,22 @@
+# DevServices Git Ignore Rules
+
+# Compiled binaries and bundle outputs
+/dist/
+*.exe
+*.dll
+*.pdb
+
+# Local environment & config
+.devservices_config.json
+*.local.json
+
+# Temporary files and logs
+*.log
+*.tmp
+*.temp
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.suo
+*.user
