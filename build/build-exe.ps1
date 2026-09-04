@@ -88,7 +88,8 @@ $mainLogic = $mainScript.Substring($mainScript.IndexOf("function Start-DevServic
 [void]$bundleContent.AppendLine($mainLogic)
 
 $standaloneScriptPath = Join-Path $OutputDir "DevServices.standalone.ps1"
-Set-Content -Path $standaloneScriptPath -Value $bundleContent.ToString() -Encoding UTF8
+# Use UTF8NoBOM so iex (irm ...) works without BOM parse error
+[System.IO.File]::WriteAllText($standaloneScriptPath, $bundleContent.ToString(), (New-Object System.Text.UTF8Encoding $false))
 Write-Host "[+] Standalone script created: $standaloneScriptPath" -ForegroundColor Green
 
 if ($NoExe) {
