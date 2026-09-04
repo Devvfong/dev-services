@@ -1,6 +1,6 @@
-﻿<#
+<#
     DevServices Standalone Single-File Bundle
-    Built: 2026-09-04 22:49:22
+    Built: 2026-09-04 23:35:09
 #>
 $ErrorActionPreference = "Stop"
 
@@ -2505,5 +2505,4 @@ function Start-DevServices {
 
 # Run
 Start-DevServices
-
 
