@@ -4,148 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="DevServices - Ultimate Windows Developer & System Maintenance Suite">
-    <title>DevServices - Windows Developer & System Suite</title>
+    <title>DevServices — Windows Developer & System Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
 
-        * {
-            font-family: 'JetBrains Mono', monospace;
-        }
+        * { font-family: 'JetBrains Mono', monospace; }
 
         :root {
-            --bg: #ffffff;
-            --text: #0a0a0a;
-            --border: #e5e5e5;
-            --card-bg: #fafafa;
-            --accent: #0a0a0a;
-            --muted: #737373;
+            --bg: #ffffff; --bg-alt: #f5f5f5; --text: #0a0a0a;
+            --border: #e5e5e5; --card-bg: #fafafa; --accent: #0a0a0a;
+            --muted: #737373; --green: #22c55e; --cyan: #06b6d4;
         }
-
         [data-theme="dark"] {
-            --bg: #0a0a0a;
-            --text: #ffffff;
-            --border: #262626;
-            --card-bg: #171717;
-            --accent: #ffffff;
-            --muted: #a3a3a3;
+            --bg: #09090b; --bg-alt: #18181b; --text: #fafafa;
+            --border: #27272a; --card-bg: #18181b; --accent: #fafafa;
+            --muted: #a1a1aa; --green: #4ade80; --cyan: #22d3ee;
         }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            transition: background 0.3s, color 0.3s;
-        }
+        body { background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
+        .border-c { border-color: var(--border); }
+        .bg-card { background: var(--card-bg); }
+        .bg-alt { background: var(--bg-alt); }
+        .text-m { color: var(--muted); }
+        .text-green { color: var(--green); }
+        .text-cyan { color: var(--cyan); }
 
-        .border-custom {
-            border-color: var(--border);
-        }
+        .btn-p { background: var(--accent); color: var(--bg); border: 1px solid var(--accent); transition: all 0.2s; }
+        .btn-p:hover { opacity: 0.8; transform: translateY(-1px); }
+        .btn-s { background: transparent; color: var(--text); border: 1px solid var(--border); transition: all 0.2s; }
+        .btn-s:hover { background: var(--card-bg); transform: translateY(-1px); }
 
-        .bg-card {
-            background: var(--card-bg);
-        }
+        /* Terminal */
+        .term { background: #0c0c0c; border: 1px solid #27272a; border-radius: 8px; overflow: hidden; }
+        .term-head { background: #1c1c1c; padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #27272a; }
+        .term-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .term-body { padding: 24px; color: #d4d4d8; font-size: 13px; line-height: 1.7; min-height: 340px; }
+        .cursor { display: inline-block; width: 8px; height: 16px; background: var(--green); animation: blink 1s step-end infinite; vertical-align: text-bottom; margin-left: 2px; }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .text-muted {
-            color: var(--muted);
-        }
+        /* Scroll animations */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-30px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .reveal-left.visible { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(30px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .reveal-right.visible { opacity: 1; transform: translateX(0); }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--bg);
-            border: 1px solid var(--accent);
-            transition: all 0.2s;
-        }
+        /* Stagger children */
+        .stagger .reveal:nth-child(1) { transition-delay: 0s; }
+        .stagger .reveal:nth-child(2) { transition-delay: 0.1s; }
+        .stagger .reveal:nth-child(3) { transition-delay: 0.2s; }
+        .stagger .reveal:nth-child(4) { transition-delay: 0.3s; }
 
-        .btn-primary:hover {
-            opacity: 0.8;
-        }
+        /* Feature card hover */
+        .feat { transition: transform 0.2s, border-color 0.2s; }
+        .feat:hover { transform: translateY(-4px); border-color: var(--muted); }
 
-        .btn-secondary {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
+        /* Theme toggle */
+        .theme-btn { cursor: pointer; transition: transform 0.2s; }
+        .theme-btn:hover { transform: rotate(30deg) scale(1.1); }
 
-        .btn-secondary:hover {
-            background: var(--card-bg);
-        }
+        /* Hero text entrance */
+        @keyframes hero-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-anim { animation: hero-in 0.7s ease-out both; }
+        .hero-anim-d1 { animation-delay: 0.1s; }
+        .hero-anim-d2 { animation-delay: 0.25s; }
+        .hero-anim-d3 { animation-delay: 0.4s; }
+        .hero-anim-d4 { animation-delay: 0.55s; }
 
-        .terminal {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-        }
-
-        .terminal-header {
-            border-bottom: 1px solid var(--border);
-        }
-
-        .theme-toggle {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        @keyframes fade-in {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fade-in 0.4s ease-out;
-        }
+        /* Floating dots background */
+        .dot-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+        .dot { position: absolute; border-radius: 50%; background: var(--border); opacity: 0.4; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 </head>
 <body class="antialiased">
     <!-- Header -->
-    <header class="border-b border-custom sticky top-0 z-50 backdrop-blur-sm bg-opacity-90" style="background: var(--bg);">
+    <header class="border-b border-c sticky top-0 z-50 backdrop-blur-md" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <span class="text-xl font-medium">&gt; DevServices</span>
             </div>
-            <div class="flex items-center gap-6">
-                <button onclick="toggleTheme()" class="theme-toggle p-2" aria-label="Toggle theme">
-                    <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center gap-5">
+                <button onclick="toggleTheme()" class="theme-btn p-2" aria-label="Toggle theme">
+                    <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
-                    <svg id="theme-icon-dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                     </svg>
                 </button>
                 <a href="https://github.com/Devvfong/dev-services" target="_blank" class="hover:opacity-70 transition">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                 </a>
-                <span class="text-xs text-muted border border-custom px-2 py-1 rounded">v2.0.0</span>
+                <span class="text-xs text-m border border-c px-2 py-1 rounded">v2.0.0</span>
             </div>
         </nav>
     </header>
 
     <!-- Hero Section -->
-    <section class="py-20 fade-in">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <div class="text-center mb-16">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+    <section class="py-24 relative overflow-hidden">
+        <div class="dot-bg" id="dotBg"></div>
+        <div class="container mx-auto px-6 max-w-4xl relative z-10">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight hero-anim">
                     Ultimate Windows<br/>Developer & System Suite
                 </h1>
-                <p class="text-lg text-muted mb-12 max-w-2xl mx-auto">
+                <p class="text-lg text-m mb-12 max-w-2xl mx-auto hero-anim hero-anim-d1">
                     Modern, modular PowerShell utility suite with interactive TUI for activation tools, dev environment setup, system maintenance, and network utilities.
                 </p>
 
-                <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-center hero-anim hero-anim-d2">
                     <a href="https://github.com/Devvfong/dev-services/raw/master/dist/DevServices.exe"
-                       class="btn-primary px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
+                       class="btn-p px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                         Download .exe
                         <span class="text-xs opacity-70">(119 KB)</span>
                     </a>
-
                     <a href="https://github.com/Devvfong/dev-services" target="_blank"
-                       class="btn-secondary px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
+                       class="btn-s px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
                         View Source
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -153,102 +133,82 @@
                     </a>
                 </div>
 
-                <p class="text-muted text-xs mt-8">
-                    Windows 10/11 • PowerShell 5.1+ • Administrator required
+                <p class="text-m text-xs mt-8 hero-anim hero-anim-d3">
+                    Windows 10/11 &bull; PowerShell 5.1+ &bull; Administrator required
                 </p>
             </div>
         </div>
     </section>
 
-    <!-- Terminal Demo -->
+    <!-- Live Terminal Demo -->
     <section class="py-16">
         <div class="container mx-auto px-6 max-w-4xl">
-            <div class="terminal rounded">
-                <div class="terminal-header p-4 flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span class="text-sm text-muted ml-2">Windows PowerShell</span>
+            <div class="term reveal">
+                <div class="term-head">
+                    <div class="term-dot" style="background:#ff5f57"></div>
+                    <div class="term-dot" style="background:#febc2e"></div>
+                    <div class="term-dot" style="background:#28c840"></div>
+                    <span class="text-sm text-gray-500 ml-2">Windows PowerShell</span>
                 </div>
-                <div class="p-6">
-                    <div class="mb-4">
-                        <span class="text-muted">PS C:\Users\Dev></span>
-                        <span class="ml-2">.\DevServices.exe</span>
-                    </div>
-                    <pre class="text-sm mb-4">
-  _____                ____  _ _
- |  __ \              / __ \(_|_)
- | |  | | _____   __ | |  | |_ _
- | |  | |/ _ \ \ / / | |  | | | |
- | |__| |  __/\ V /  | |__| | | |
- |_____/ \___| \_/    \___\_\_|_|
-                    </pre>
-                    <div class="text-sm">
-                        <div class="mb-2">Ultimate Windows Developer & System Suite v2.0.0</div>
-                        <div class="mb-4 text-muted">[ Home ] | ADMINISTRATOR | JetBrains Mono (20pt)</div>
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs">&gt;</span>
-                                <span>[1] Legacy & Activation Utilities</span>
-                            </div>
-                            <div class="text-muted ml-4">[2] Developer Environment Suite</div>
-                            <div class="text-muted ml-4">[3] System Maintenance & Tweaks</div>
-                            <div class="text-muted ml-4">[4] Network Utilities & DNS Switcher</div>
-                            <div class="text-muted ml-4">[5] Settings & Personalization</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="term-body" id="terminal"></div>
             </div>
+        </div>
+    </section>
+
+    <!-- Install Command -->
+    <section class="py-12 reveal">
+        <div class="container mx-auto px-6 max-w-3xl text-center">
+            <p class="text-m text-sm mb-3">Or install via PowerShell:</p>
+            <div class="bg-card border border-c rounded p-4 inline-flex items-center gap-3 cursor-pointer group" onclick="copyCmd(this)">
+                <code class="text-sm text-green">iex (irm https://raw.githubusercontent.com/Devvfong/dev-services/master/install.ps1)</code>
+                <svg class="w-4 h-4 text-m group-hover:text-green transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+            </div>
+            <p class="text-m text-xs mt-3 transition-opacity" id="copyMsg" style="opacity:0">Copied!</p>
         </div>
     </section>
 
     <!-- Features Grid -->
     <section class="py-20">
         <div class="container mx-auto px-6 max-w-5xl">
-            <h2 class="text-2xl font-bold text-center mb-12">Features</h2>
+            <h2 class="text-2xl font-bold text-center mb-12 reveal">Features</h2>
 
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Legacy Tools -->
-                <div class="bg-card p-6 rounded border border-custom">
+            <div class="grid md:grid-cols-2 gap-6 stagger">
+                <div class="feat bg-card p-6 rounded border border-c reveal">
                     <h3 class="text-base font-medium mb-4">Legacy & Activation</h3>
-                    <ul class="text-sm text-muted space-y-1">
-                        <li>• IDM Trial Reset & Optimizer</li>
-                        <li>• Microsoft Activation Scripts (MAS)</li>
-                        <li>• Office Deployment Tool (ODT)</li>
-                        <li>• Office 365/LTSC Quick Installer</li>
+                    <ul class="text-sm text-m space-y-1.5">
+                        <li>&#8226; IDM Trial Reset & Optimizer</li>
+                        <li>&#8226; Microsoft Activation Scripts (MAS)</li>
+                        <li>&#8226; Office Deployment Tool (ODT)</li>
+                        <li>&#8226; Office 365/LTSC Quick Installer</li>
                     </ul>
                 </div>
-
-                <!-- Dev Environment -->
-                <div class="bg-card p-6 rounded border border-custom">
+                <div class="feat bg-card p-6 rounded border border-c reveal">
                     <h3 class="text-base font-medium mb-4">Developer Suite</h3>
-                    <ul class="text-sm text-muted space-y-1">
-                        <li>• 25+ Package Catalog (Node, Python, Git)</li>
-                        <li>• Runtime Diagnostics Scanner</li>
-                        <li>• Batch Winget Installer</li>
-                        <li>• WSL2 Manager</li>
+                    <ul class="text-sm text-m space-y-1.5">
+                        <li>&#8226; 25+ Package Catalog (Node, Python, Git)</li>
+                        <li>&#8226; Runtime Diagnostics Scanner</li>
+                        <li>&#8226; Batch Winget Installer</li>
+                        <li>&#8226; WSL2 Manager</li>
                     </ul>
                 </div>
-
-                <!-- System Maintenance -->
-                <div class="bg-card p-6 rounded border border-custom">
+                <div class="feat bg-card p-6 rounded border border-c reveal">
                     <h3 class="text-base font-medium mb-4">System Tweaks</h3>
-                    <ul class="text-sm text-muted space-y-1">
-                        <li>• Deep Junk & Cache Cleaner</li>
-                        <li>• DISM/SFC System Repair</li>
-                        <li>• Ultimate Performance Power Plan</li>
-                        <li>• Windows 11 UI Customization</li>
+                    <ul class="text-sm text-m space-y-1.5">
+                        <li>&#8226; Deep Junk & Cache Cleaner</li>
+                        <li>&#8226; DISM/SFC System Repair</li>
+                        <li>&#8226; Ultimate Performance Power Plan</li>
+                        <li>&#8226; Windows 11 UI Customization</li>
                     </ul>
                 </div>
-
-                <!-- Network Tools -->
-                <div class="bg-card p-6 rounded border border-custom">
+                <div class="feat bg-card p-6 rounded border border-c reveal">
                     <h3 class="text-base font-medium mb-4">Network Utilities</h3>
-                    <ul class="text-sm text-muted space-y-1">
-                        <li>• Quick DNS Switcher (Cloudflare/Google)</li>
-                        <li>• Winsock & DNS Flush</li>
-                        <li>• Multi-Server Ping Benchmark</li>
-                        <li>• IP Configuration Viewer</li>
+                    <ul class="text-sm text-m space-y-1.5">
+                        <li>&#8226; Quick DNS Switcher (Cloudflare/Google)</li>
+                        <li>&#8226; Winsock & DNS Flush</li>
+                        <li>&#8226; Multi-Server Ping Benchmark</li>
+                        <li>&#8226; IP Configuration Viewer</li>
                     </ul>
                 </div>
             </div>
@@ -256,36 +216,35 @@
     </section>
 
     <!-- Tech Stack -->
-    <section class="py-20">
+    <section class="py-20 border-t border-c">
         <div class="container mx-auto px-6 max-w-4xl">
-            <h2 class="text-2xl font-bold text-center mb-12">Built with</h2>
-
+            <h2 class="text-2xl font-bold text-center mb-12 reveal">Built with</h2>
             <div class="grid grid-cols-3 gap-8 text-center">
-                <div>
+                <div class="reveal-left">
                     <h3 class="text-sm font-medium mb-2">Modular</h3>
-                    <p class="text-xs text-muted">10 PowerShell modules</p>
+                    <p class="text-xs text-m">10 PowerShell modules</p>
                 </div>
-                <div>
+                <div class="reveal">
                     <h3 class="text-sm font-medium mb-2">Interactive TUI</h3>
-                    <p class="text-xs text-muted">Arrow-key navigation</p>
+                    <p class="text-xs text-m">Arrow-key navigation</p>
                 </div>
-                <div>
+                <div class="reveal-right">
                     <h3 class="text-sm font-medium mb-2">Safe</h3>
-                    <p class="text-xs text-muted">UAC elevation</p>
+                    <p class="text-xs text-m">UAC elevation</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 border-t border-custom">
-        <div class="container mx-auto px-6 text-center max-w-2xl">
+    <section class="py-20 border-t border-c">
+        <div class="container mx-auto px-6 text-center max-w-2xl reveal">
             <h2 class="text-2xl font-bold mb-4">Get Started</h2>
-            <p class="text-sm text-muted mb-8">
+            <p class="text-sm text-m mb-8">
                 Download DevServices now and streamline your Windows workflow.
             </p>
             <a href="https://github.com/Devvfong/dev-services/raw/master/dist/DevServices.exe"
-               class="btn-primary px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
+               class="btn-p px-8 py-3 rounded inline-flex items-center gap-2 text-sm font-medium">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
@@ -295,11 +254,11 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 border-t border-custom">
+    <footer class="py-12 border-t border-c">
         <div class="container mx-auto px-6">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="text-sm text-muted">
-                    © 2026 <a href="https://github.com/Devvfong" class="hover:underline">Devvfong</a>
+                <div class="text-sm text-m">
+                    &copy; 2026 <a href="https://github.com/Devvfong" class="hover:underline">Devvfong</a>
                 </div>
                 <div class="flex gap-6 text-sm">
                     <a href="https://github.com/Devvfong/dev-services" class="hover:opacity-70">GitHub</a>
@@ -310,33 +269,188 @@
     </footer>
 
     <script>
-        // Theme toggle
-        function toggleTheme() {
-            const html = document.documentElement;
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            const newTheme = isDark ? 'light' : 'dark';
+    // ── Theme Toggle ──
+    function toggleTheme() {
+        const h = document.documentElement;
+        const t = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        h.setAttribute('data-theme', t);
+        localStorage.setItem('theme', t);
+        updIcon();
+    }
+    function updIcon() {
+        const d = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.getElementById('icon-sun').classList.toggle('hidden', !d);
+        document.getElementById('icon-moon').classList.toggle('hidden', d);
+    }
+    (function(){
+        const s = localStorage.getItem('theme');
+        if (s) document.documentElement.setAttribute('data-theme', s);
+        else if (matchMedia('(prefers-color-scheme:dark)').matches) document.documentElement.setAttribute('data-theme','dark');
+        updIcon();
+    })();
 
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon();
+    // ── Scroll Reveal ──
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => obs.observe(el));
+
+    // ── Floating Dots ──
+    (function(){
+        const bg = document.getElementById('dotBg');
+        for (let i = 0; i < 30; i++) {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            const size = Math.random() * 4 + 2;
+            d.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${3+Math.random()*4}s ease-in-out ${Math.random()*3}s infinite`;
+            bg.appendChild(d);
+        }
+    })();
+
+    // ── Copy Command ──
+    function copyCmd(el) {
+        const t = el.querySelector('code').textContent;
+        navigator.clipboard.writeText(t);
+        const msg = document.getElementById('copyMsg');
+        msg.style.opacity = '1';
+        setTimeout(() => msg.style.opacity = '0', 1500);
+    }
+
+    // ── Live Terminal Animation (loops) ──
+    (function(){
+        const el = document.getElementById('terminal');
+        const green = '#4ade80', cyan = '#22d3ee', gray = '#71717a', white = '#d4d4d8', yellow = '#facc15';
+
+        const scenes = [
+            // Scene 1: Launch DevServices
+            {lines: [
+                {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
+                {text: '.\\DevServices.exe', color: cyan, speed: 40, pause: 600},
+                {text: '\n', speed: 0, pause: 300},
+                {text: '  _____                ____  _ _\n |  __ \\              / __ \\(_|_)\n | |  | | _____   __ | |  | |_ _\n | |  | |/ _ \\ \\ / / | |  | | | |\n | |__| |  __/\\ V /  | |__| | | |\n |_____/ \\___| \\_/    \\___\\_\\_|_|\n', color: green, speed: 2, pause: 500},
+                {text: '\n Ultimate Windows Developer & System Suite v2.0.0\n', color: white, speed: 10, pause: 200},
+                {text: ' [ Home ] | ADMINISTRATOR | JetBrains Mono\n\n', color: gray, speed: 10, pause: 400},
+                {text: ' > [1] Legacy & Activation Utilities\n', color: white, speed: 15, pause: 100},
+                {text: '   [2] Developer Environment Suite\n', color: gray, speed: 15, pause: 100},
+                {text: '   [3] System Maintenance & Tweaks\n', color: gray, speed: 15, pause: 100},
+                {text: '   [4] Network Utilities & DNS Switcher\n', color: gray, speed: 15, pause: 100},
+                {text: '   [5] Settings & Personalization\n', color: gray, speed: 15, pause: 2000},
+            ]},
+            // Scene 2: System Cleanup
+            {lines: [
+                {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
+                {text: 'DevServices -Module SystemTweaks', color: cyan, speed: 35, pause: 600},
+                {text: '\n\n', speed: 0, pause: 200},
+                {text: ' [*] Deep Temporary Files & Junk Cleaner\n', color: white, speed: 12, pause: 300},
+                {text: ' [~] Scanning junk folders...\n', color: yellow, speed: 12, pause: 800},
+                {text: ' [+] Cleaning User\\Temp      ', color: gray, speed: 10, pause: 200},
+                {text: '✓\n', color: green, speed: 0, pause: 150},
+                {text: ' [+] Cleaning Windows\\Temp   ', color: gray, speed: 10, pause: 200},
+                {text: '✓\n', color: green, speed: 0, pause: 150},
+                {text: ' [+] Cleaning Prefetch       ', color: gray, speed: 10, pause: 200},
+                {text: '✓\n', color: green, speed: 0, pause: 150},
+                {text: ' [+] Clearing CrashDumps     ', color: gray, speed: 10, pause: 200},
+                {text: '✓\n', color: green, speed: 0, pause: 150},
+                {text: ' [+] Emptying Recycle Bin     ', color: gray, speed: 10, pause: 200},
+                {text: '✓\n', color: green, speed: 0, pause: 400},
+                {text: '\n [✓] Purged 1,247 cached items. Freed 2.3 GB.\n', color: green, speed: 12, pause: 2500},
+            ]},
+            // Scene 3: Developer Tools
+            {lines: [
+                {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
+                {text: 'DevServices -Module DevTools', color: cyan, speed: 35, pause: 600},
+                {text: '\n\n', speed: 0, pause: 200},
+                {text: ' [*] Runtime Environment Scanner\n\n', color: white, speed: 12, pause: 400},
+                {text: '   Node.js     v22.5.0     ', color: gray, speed: 8, pause: 100},
+                {text: '✓\n', color: green, speed: 0, pause: 100},
+                {text: '   Python      v3.12.4     ', color: gray, speed: 8, pause: 100},
+                {text: '✓\n', color: green, speed: 0, pause: 100},
+                {text: '   Git         v2.46.0     ', color: gray, speed: 8, pause: 100},
+                {text: '✓\n', color: green, speed: 0, pause: 100},
+                {text: '   Docker      v27.1.1     ', color: gray, speed: 8, pause: 100},
+                {text: '✓\n', color: green, speed: 0, pause: 100},
+                {text: '   Rust        v1.80.0     ', color: gray, speed: 8, pause: 100},
+                {text: '✓\n', color: green, speed: 0, pause: 100},
+                {text: '   Go          -----       ', color: gray, speed: 8, pause: 100},
+                {text: '✗ not found\n', color: '#f87171', speed: 0, pause: 400},
+                {text: '\n [i] 5/6 tools detected. Install missing? (Y/N)\n', color: cyan, speed: 12, pause: 2500},
+            ]},
+            // Scene 4: Network DNS
+            {lines: [
+                {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
+                {text: 'DevServices -Module Network', color: cyan, speed: 35, pause: 600},
+                {text: '\n\n', speed: 0, pause: 200},
+                {text: ' [*] Quick DNS Switcher\n\n', color: white, speed: 12, pause: 300},
+                {text: '   [1] Cloudflare    1.1.1.1\n', color: gray, speed: 12, pause: 100},
+                {text: '   [2] Google        8.8.8.8\n', color: gray, speed: 12, pause: 100},
+                {text: '   [3] Quad9         9.9.9.9\n', color: gray, speed: 12, pause: 100},
+                {text: '   [4] AdGuard       94.140.14.14\n', color: gray, speed: 12, pause: 300},
+                {text: '\n > Selecting Cloudflare DNS...\n', color: white, speed: 15, pause: 500},
+                {text: ' [~] Flushing DNS cache...       ', color: yellow, speed: 10, pause: 400},
+                {text: '✓\n', color: green, speed: 0, pause: 200},
+                {text: ' [~] Applying DNS 1.1.1.1...     ', color: yellow, speed: 10, pause: 400},
+                {text: '✓\n', color: green, speed: 0, pause: 200},
+                {text: ' [~] Verifying connectivity...    ', color: yellow, speed: 10, pause: 400},
+                {text: '✓\n', color: green, speed: 0, pause: 300},
+                {text: '\n [✓] DNS switched to Cloudflare successfully!\n', color: green, speed: 12, pause: 2500},
+            ]}
+        ];
+
+        let sceneIdx = 0;
+        let running = false;
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function span(text, color) {
+            const s = document.createElement('span');
+            s.style.color = color;
+            s.textContent = text;
+            return s;
         }
 
-        function updateThemeIcon() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            document.getElementById('theme-icon-light').classList.toggle('hidden', !isDark);
-            document.getElementById('theme-icon-dark').classList.toggle('hidden', isDark);
-        }
+        async function typeScene(scene) {
+            el.innerHTML = '';
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
 
-        // Init theme
-        (function() {
-            const saved = localStorage.getItem('theme');
-            if (saved) {
-                document.documentElement.setAttribute('data-theme', saved);
-            } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
+            for (const seg of scene.lines) {
+                if (seg.speed > 0) {
+                    for (const ch of seg.text) {
+                        const s = span(ch, seg.color);
+                        el.insertBefore(s, cursor.parentNode ? cursor : null);
+                        el.appendChild(cursor);
+                        el.parentElement.scrollTop = el.parentElement.scrollHeight;
+                        await sleep(seg.speed);
+                    }
+                } else {
+                    const s = span(seg.text, seg.color);
+                    el.insertBefore(s, cursor.parentNode ? cursor : null);
+                    el.appendChild(cursor);
+                }
+                await sleep(seg.pause);
             }
-            updateThemeIcon();
-        })();
+
+            // Blink cursor at end
+            await sleep(1500);
+        }
+
+        async function loop() {
+            running = true;
+            while (running) {
+                await typeScene(scenes[sceneIdx]);
+                sceneIdx = (sceneIdx + 1) % scenes.length;
+                await sleep(500);
+            }
+        }
+
+        // Start when terminal scrolls into view
+        const termObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting && !running) loop();
+            });
+        }, { threshold: 0.3 });
+        termObs.observe(el.parentElement.parentElement);
+    })();
     </script>
 </body>
 </html>
