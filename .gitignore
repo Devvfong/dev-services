@@ -1,10 +1,10 @@
 # DevServices Git Ignore Rules
 
 # Compiled binaries and bundle outputs
-/dist/
-*.exe
-*.dll
-*.pdb
+/dist/*.dll
+/dist/*.pdb
+!/dist/DevServices.exe
+!/dist/DevServices.standalone.ps1
 
 # Local environment & config
 .devservices_config.json
