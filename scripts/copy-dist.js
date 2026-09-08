@@ -31,4 +31,8 @@ if (fs.existsSync(dest)) {
 
 console.log(`[*] Copying ${src} → ${dest}`);
 copyRecursive(src, dest);
+
+// Create .nojekyll in docs/ so GitHub Pages serves directories starting with '_' (e.g. _next/)
+fs.writeFileSync(path.join(dest, '.nojekyll'), '');
+console.log('[+] Created .nojekyll file in docs/');
 console.log('[+] Done! docs/ is ready for GitHub Pages.');
