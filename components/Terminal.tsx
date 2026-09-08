@@ -93,6 +93,25 @@ export default function Terminal() {
           { text: '\n [✓] DNS switched to Cloudflare successfully!\n', color: green, speed: 12, pause: 2500 },
         ],
       },
+      // Scene 5: Full Tool Catalog Overview
+      {
+        lines: [
+          { text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200 },
+          { text: 'DevServices -Catalog --list-all', color: cyan, speed: 35, pause: 600 },
+          { text: '\n\n', color: gray, speed: 0, pause: 200 },
+          { text: ' [*] Full DevServices Tool Catalog\n', color: white, speed: 12, pause: 300 },
+          { text: '   [1] Legacy & Activation Utilities     🪟\n', color: gray, speed: 10, pause: 50 },
+          { text: '   [2] Developer Environment Suite        🪟🐧\n', color: gray, speed: 10, pause: 50 },
+          { text: '   [3] System Maintenance & Tweaks        🪟🐧\n', color: gray, speed: 10, pause: 50 },
+          { text: '   [4] Network Utilities & DNS Switcher   🪟🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '   [5] Settings & Personalization          🪟🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '   [6] Linux Package Management            🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '   [7] Linux CLI & Terminal Utilities      🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '   [8] Media & Content Creation            🪟🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '   [9] Linux Backup, Security & Firewall   🐧\n', color: gray, speed: 10, pause: 60 },
+          { text: '\n [i] Showing stable + latest versions for all tools.\n', color: cyan, speed: 12, pause: 2500 },
+        ],
+      },
     ]
 
     let sceneIdx = 0

@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import Terminal from '../components/Terminal'
 import Features from '../components/Features'
 import QuickStart from '../components/QuickStart'
+import ToolsCatalog from '../components/ToolsCatalog'
 import Footer from '../components/Footer'
 
 export default function HomePage() {
@@ -18,6 +19,7 @@ export default function HomePage() {
         </section>
         <Features />
         <QuickStart />
+        <ToolsCatalog />
       </main>
       <Footer />
     </div>
