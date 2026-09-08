@@ -21,6 +21,7 @@ export default function Header() {
     const s = localStorage.getItem('theme')
     if (s) document.documentElement.setAttribute('data-theme', s)
     else if (window.matchMedia('(prefers-color-scheme:dark)').matches) document.documentElement.setAttribute('data-theme', 'dark')
+    else if (!document.documentElement.getAttribute('data-theme')) document.documentElement.setAttribute('data-theme', 'dark')
 
     const d = document.documentElement.getAttribute('data-theme') === 'dark'
     const sun = document.getElementById('icon-sun')

@@ -16,7 +16,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={mono.className}>
+    <html lang="en" data-theme="dark" className={mono.className}>
       <body>{children}</body>
     </html>
   )
