@@ -10,6 +10,11 @@
 .devservices_config.json
 *.local.json
 
+# Node & Next.js
+node_modules/
+.next/
+out/
+
 # Temporary files and logs
 *.log
 *.tmp

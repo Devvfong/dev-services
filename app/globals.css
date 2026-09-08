@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* App background + theme vars */
+:root {
+  --bg: #ffffff; --bg-alt: #f5f5f5; --text: #0a0a0a;
+  --border: #e5e5e5; --card-bg: #fafafa; --accent: #0a0a0a;
+  --muted: #737373; --green: #22c55e; --cyan: #06b6d4;
+}
+
+html[data-theme="dark"] {
+  --bg: #09090b; --bg-alt: #18181b; --text: #fafafa;
+  --border: #27272a; --card-bg: #18181b; --accent: #fafafa;
+  --muted: #a1a1aa; --green: #4ade80; --cyan: #22d3ee;
+}
+
+body { background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
+.border-c { border-color: var(--border); }
+.bg-card { background: var(--card-bg); }
+.bg-alt { background: var(--bg-alt); }
+.text-m { color: var(--muted); }
+.text-green { color: var(--green); }
+.text-cyan { color: var(--cyan); }
+
+.btn-p { background: var(--accent); color: var(--bg); border: 1px solid var(--accent); transition: all 0.2s; }
+.btn-p:hover { opacity: 0.8; transform: translateY(-1px); }
+.btn-s { background: transparent; color: var(--text); border: 1px solid var(--border); transition: all 0.2s; }
+.btn-s:hover { background: var(--card-bg); transform: translateY(-1px); }
+
+/* Terminal */
+.term { background: #0c0c0c; border: 1px solid #27272a; border-radius: 8px; overflow: hidden; }
+.term-head { background: #1c1c1c; padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #27272a; }
+.term-dot { width: 12px; height: 12px; border-radius: 50%; }
+.term-body { padding: 24px; color: #d4d4d8; font-size: 13px; line-height: 1.7; min-height: 340px; white-space: pre-wrap; word-break: break-word; overflow-x: hidden; max-height: 400px; overflow-y: auto; }
+.cursor { display: inline-block; width: 8px; height: 16px; background: var(--green); animation: blink 1s step-end infinite; vertical-align: text-bottom; margin-left: 2px; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Scroll animations */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-30px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(30px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+.theme-btn { cursor: pointer; transition: transform 0.2s; }
+.theme-btn:hover { transform: rotate(30deg) scale(1.1); }
+
+/* Hero */
+@keyframes hero-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.hero-anim { animation: hero-in 0.7s ease-out both; }
+.hero-anim-d1 { animation-delay: 0.1s; }
+.hero-anim-d2 { animation-delay: 0.25s; }
+.hero-anim-d3 { animation-delay: 0.4s; }
+.hero-anim-d4 { animation-delay: 0.55s; }
+
+/* Floating dots background */
+.dot-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.dot { position: absolute; border-radius: 50%; background: var(--border); opacity: 0.4; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
