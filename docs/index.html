@@ -39,7 +39,7 @@
         .term { background: #0c0c0c; border: 1px solid #27272a; border-radius: 8px; overflow: hidden; }
         .term-head { background: #1c1c1c; padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #27272a; }
         .term-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .term-body { padding: 24px; color: #d4d4d8; font-size: 13px; line-height: 1.7; min-height: 340px; }
+        .term-body { padding: 24px; color: #d4d4d8; font-size: 13px; line-height: 1.7; min-height: 340px; white-space: pre-wrap; word-break: break-word; overflow-x: hidden; max-height: 400px; overflow-y: auto; }
         .cursor { display: inline-block; width: 8px; height: 16px; background: var(--green); animation: blink 1s step-end infinite; vertical-align: text-bottom; margin-left: 2px; }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -327,7 +327,7 @@
                 {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
                 {text: '.\\DevServices.exe', color: cyan, speed: 40, pause: 600},
                 {text: '\n', speed: 0, pause: 300},
-                {text: '  _____                ____  _ _\n |  __ \\              / __ \\(_|_)\n | |  | | _____   __ | |  | |_ _\n | |  | |/ _ \\ \\ / / | |  | | | |\n | |__| |  __/\\ V /  | |__| | | |\n |_____/ \\___| \\_/    \\___\\_\\_|_|\n', color: green, speed: 0, pause: 500},
+                {text: '  _____                ____  _ _\n |  __ \\              / __ \\(_|_)\n | |  | | _____   __ | |  | |_ _\n | |  | |/ _ \\ \\ / / | |  | | | |\n | |__| |  __/\\ V /  | |__| | | |\n |_____/ \\___| \\_/    \\___\\_\\_|_|\n', color: green, speed: 0, lineByLine: true, lineDelay: 35, pause: 500},
                 {text: '\n Ultimate Windows Developer & System Suite v2.0.0\n', color: white, speed: 10, pause: 200},
                 {text: ' [ Home ] | ADMINISTRATOR | JetBrains Mono\n\n', color: gray, speed: 10, pause: 400},
                 {text: ' > [1] Legacy & Activation Utilities\n', color: white, speed: 15, pause: 100},
@@ -412,20 +412,32 @@
             el.innerHTML = '';
             const cursor = document.createElement('span');
             cursor.className = 'cursor';
+            el.appendChild(cursor);
 
             for (const seg of scene.lines) {
-                if (seg.speed > 0) {
+                if (seg.lineByLine) {
+                    // Render multi-line block one line at a time (for ASCII art)
+                    const rows = seg.text.split('\n');
+                    for (let i = 0; i < rows.length; i++) {
+                        const line = i < rows.length - 1 ? rows[i] + '\n' : rows[i];
+                        if (!line) continue;
+                        const s = span(line, seg.color);
+                        el.insertBefore(s, cursor);
+                        el.scrollTop = el.scrollHeight;
+                        await sleep(seg.lineDelay || 40);
+                    }
+                } else if (seg.speed > 0) {
+                    // Char-by-char typing for normal text
                     for (const ch of seg.text) {
                         const s = span(ch, seg.color);
-                        el.insertBefore(s, cursor.parentNode ? cursor : null);
-                        el.appendChild(cursor);
-                        el.parentElement.scrollTop = el.parentElement.scrollHeight;
+                        el.insertBefore(s, cursor);
+                        el.scrollTop = el.scrollHeight;
                         await sleep(seg.speed);
                     }
                 } else {
+                    // Instant render
                     const s = span(seg.text, seg.color);
-                    el.insertBefore(s, cursor.parentNode ? cursor : null);
-                    el.appendChild(cursor);
+                    el.insertBefore(s, cursor);
                 }
                 await sleep(seg.pause);
             }
