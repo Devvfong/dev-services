@@ -327,7 +327,7 @@
                 {text: 'PS C:\\Users\\Dev> ', color: gray, speed: 0, pause: 200},
                 {text: '.\\DevServices.exe', color: cyan, speed: 40, pause: 600},
                 {text: '\n', speed: 0, pause: 300},
-                {text: '  _____                ____  _ _\n |  __ \\              / __ \\(_|_)\n | |  | | _____   __ | |  | |_ _\n | |  | |/ _ \\ \\ / / | |  | | | |\n | |__| |  __/\\ V /  | |__| | | |\n |_____/ \\___| \\_/    \\___\\_\\_|_|\n', color: green, speed: 0, lineByLine: true, lineDelay: 35, pause: 500},
+                {text: '  _____                ____  _ _\n |  __ \\              / __ \\(_|_)\n | |  | | _____   __ | |  | |_ _\n | |  | |/ _ \\ \\ / / | |  | | | |\n | |__| |  __/\\ V /  | |__| | | |\n |_____/ \\___| \\_/    \\___\\_\\_|_|\n', color: green, speed: 0, block: true, pause: 500},
                 {text: '\n Ultimate Windows Developer & System Suite v2.0.0\n', color: white, speed: 10, pause: 200},
                 {text: ' [ Home ] | ADMINISTRATOR | JetBrains Mono\n\n', color: gray, speed: 10, pause: 400},
                 {text: ' > [1] Legacy & Activation Utilities\n', color: white, speed: 15, pause: 100},
@@ -415,19 +415,15 @@
             el.appendChild(cursor);
 
             for (const seg of scene.lines) {
-                if (seg.lineByLine) {
-                    // Render multi-line block one line at a time (for ASCII art)
-                    const rows = seg.text.split('\n');
-                    for (let i = 0; i < rows.length; i++) {
-                        const line = i < rows.length - 1 ? rows[i] + '\n' : rows[i];
-                        if (!line) continue;
-                        const s = span(line, seg.color);
-                        el.insertBefore(s, cursor);
-                        el.scrollTop = el.scrollHeight;
-                        await sleep(seg.lineDelay || 40);
-                    }
+                if (seg.block) {
+                    // ASCII art: render as a <pre> block for guaranteed alignment
+                    const pre = document.createElement('pre');
+                    pre.style.cssText = 'margin:0;padding:0;font:inherit;color:' + seg.color + ';white-space:pre;display:inline;background:none;border:none;';
+                    pre.textContent = seg.text;
+                    el.insertBefore(pre, cursor);
+                    el.scrollTop = el.scrollHeight;
+                    await sleep(seg.pause);
                 } else if (seg.speed > 0) {
-                    // Char-by-char typing for normal text
                     for (const ch of seg.text) {
                         const s = span(ch, seg.color);
                         el.insertBefore(s, cursor);
@@ -435,14 +431,12 @@
                         await sleep(seg.speed);
                     }
                 } else {
-                    // Instant render
                     const s = span(seg.text, seg.color);
                     el.insertBefore(s, cursor);
                 }
-                await sleep(seg.pause);
+                await sleep(seg.pause || 0);
             }
 
-            // Blink cursor at end
             await sleep(1500);
         }
 
