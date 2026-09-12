@@ -25,18 +25,15 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: dev-services/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: dev-services
         run: npm ci
 
       - name: Build static site
-        working-directory: dev-services
         run: npm run build
 
       - name: Commit & push updated docs/
-        working-directory: dev-services
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
