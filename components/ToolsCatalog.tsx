@@ -1,23 +1,35 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CATEGORIES, type Platform } from '../lib/tools-data'
-
-function platformLabel(p: Platform) {
-  return p === 'win' ? 'Windows' : 'Linux'
-}
 
 function matchesPlatform(toolPlatforms: Platform[], tab: Platform | 'all') {
   if (tab === 'all') return true
   return toolPlatforms.includes(tab)
 }
 
+function platformIcon(p: Platform) {
+  return p === 'win' ? '🪟' : '🐧'
+}
+
+function platformName(p: Platform) {
+  return p === 'win' ? 'Windows' : 'Linux'
+}
+
 export default function ToolsCatalog() {
   const [q, setQ] = useState('')
   const [tab, setTab] = useState<Platform | 'all'>('all')
+  const [copied, setCopied] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!copied) return
+    const t = window.setTimeout(() => setCopied(null), 1200)
+    return () => window.clearTimeout(t)
+  }, [copied])
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase()
+
     const byPlatform = CATEGORIES.map((c) => {
       const tools = c.tools.filter((t) => matchesPlatform(t.platforms, tab))
       return { ...c, tools }
@@ -26,7 +38,7 @@ export default function ToolsCatalog() {
     const bySearch = query
       ? byPlatform.map((c) => {
           const tools = c.tools.filter((t) => {
-            const hay = [t.name, t.desc, c.title, c.desc, t.stable, t.latest].join(' ').toLowerCase()
+            const hay = [t.name, t.desc, c.title, t.stable, t.latest].join(' ').toLowerCase()
             return hay.includes(query)
           })
           return { ...c, tools }
@@ -36,24 +48,49 @@ export default function ToolsCatalog() {
     return bySearch.filter((c) => c.tools.length > 0)
   }, [q, tab])
 
-  function renderCopy(cmd: string) {
+  function copyCmd(toolId: string, cmd: string) {
+    navigator.clipboard
+      .writeText(cmd)
+      .then(() => setCopied(toolId))
+      .catch(() => setCopied(null))
+  }
+
+  function CmdBox({ platform, cmd, toolId }: { platform: Platform; cmd: string; toolId: string }) {
+    const prompt = platform === 'win' ? 'PS>' : '$'
     return (
-      <div className="bg-alt border border-c rounded-lg p-4 text-sm">
-        <code className="break-all">{cmd}</code>
-        <button
-          className="ml-3 inline-flex items-center gap-2 text-xs opacity-70 hover:opacity-100 transition"
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(cmd)
-            } catch {
-              // no-op
-            }
-          }}
-          aria-label="Copy command"
-        >
-          Copy
-        </button>
+      <div className="cmd-box">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-xs text-m opacity-70 mb-2">{platformName(platform)} command</div>
+            <code className="block break-all">{prompt} {cmd}</code>
+          </div>
+          <div className="shrink-0">
+            <button
+              className="copy-btn"
+              onClick={() => copyCmd(toolId, cmd)}
+              aria-label={`Copy ${platformName(platform)} command`}
+            >
+              {copied === toolId ? '✓ Copied' : 'Copy'}
+            </button>
+          </div>
+        </div>
       </div>
+    )
+  }
+
+  function StablePill({ stable }: { stable: string }) {
+    return (
+      <span className="pill pill-stable">
+        <span className="pill-dot" style={{ background: 'var(--green)' }} /> stable {stable}
+      </span>
+    )
+  }
+
+  function LatestPill({ latest }: { latest: string }) {
+    return (
+      <span className="pill pill-latest">
+        <span className="pill-dot" style={{ background: 'var(--cyan)' }} /> latest {latest}
+      </span>
     )
   }
 
@@ -72,11 +109,20 @@ export default function ToolsCatalog() {
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-m opacity-70">&gt;</span>
               <input
-                className="w-full pl-7 pr-3 py-3 rounded-lg bg-card border border-c text-sm outline-none focus:ring-2 focus:ring-cyan/30"
+                className="w-full pl-7 pr-16 py-3 rounded-lg bg-card border border-c text-sm outline-none focus:ring-2 focus:ring-cyan/30"
                 placeholder="Search tools (e.g. dns, node, vlc)"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
               />
+              {q.trim() ? (
+                <button
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs opacity-70 hover:opacity-100 transition"
+                  onClick={() => setQ('')}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              ) : null}
             </div>
           </div>
         </div>
@@ -92,7 +138,7 @@ export default function ToolsCatalog() {
             className={`px-4 py-2 rounded-lg border transition ${tab === 'win' ? 'bg-card border-c' : 'bg-transparent border-c/60 hover:bg-card/60'}`}
             onClick={() => setTab('win')}
           >
-            Windows
+            {platformName('win')}
           </button>
           <button
             className={`px-4 py-2 rounded-lg border transition ${tab === 'linux' ? 'bg-card border-c' : 'bg-transparent border-c/60 hover:bg-card/60'}`}
@@ -115,70 +161,49 @@ export default function ToolsCatalog() {
 
               <div className="space-y-4 mt-6">
                 {cat.tools.map((t) => {
-                  const isWin = t.platforms.includes('win')
-                  const isLinux = t.platforms.includes('linux')
+                  const hasWin = t.platforms.includes('win') && !!t.cmdWin
+                  const hasLinux = t.platforms.includes('linux') && !!t.cmdLinux
 
-                  const activePlatform = tab === 'all' ? null : tab
-                  const cmd =
-                    activePlatform === 'win' ? t.cmdWin :
-                    activePlatform === 'linux' ? t.cmdLinux :
-                    // all: prefer showing whichever platform we have for the active tab; if both, show both in two blocks
-                    null
+                  const showWin = tab === 'all' ? hasWin : tab === 'win'
+                  const showLinux = tab === 'all' ? hasLinux : tab === 'linux'
 
                   return (
-                    <div key={t.id} className="border border-c/60 rounded-lg p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="font-medium">{t.name}</div>
-                          <div className="text-m text-sm opacity-90 mt-1">{t.desc}</div>
+                    <div key={t.id} className="tool-card">
+                      <div className="mini-term-head">
+                        <div className="mini-term-dots" aria-hidden="true">
+                          <span className="mini-dot" style={{ background: '#ff5f57' }} />
+                          <span className="mini-dot" style={{ background: '#febc2e' }} />
+                          <span className="mini-dot" style={{ background: '#28c840' }} />
                         </div>
-                        <div className="text-xs text-m whitespace-nowrap">
-                          <div>● stable {t.stable}</div>
-                          <div>● latest {t.latest}</div>
+
+                        <div className="mini-term-title">{t.name}</div>
+
+                        <div className="ml-auto flex flex-wrap justify-end gap-2">
+                          {t.platforms.map((p) => (
+                            <span key={p} className="platform-pill">
+                              {platformIcon(p)} {platformName(p)}
+                            </span>
+                          ))}
+                          {t.note ? <span className="platform-pill">{t.note}</span> : null}
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {t.platforms.map((p) => (
-                          <span key={p} className="text-xs border border-c/60 rounded-full px-2 py-1 opacity-90">
-                            {p === 'win' ? '🪟 Windows' : '🐧 Linux'}
-                          </span>
-                        ))}
-                        {t.note ? <span className="text-xs border border-c/60 rounded-full px-2 py-1">{t.note}</span> : null}
-                      </div>
+                      <div className="mini-term-body">
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <StablePill stable={t.stable} />
+                          <LatestPill latest={t.latest} />
+                        </div>
 
-                      <div className="mt-4 space-y-3">
-                        {tab === 'all' ? (
-                          <>
-                            {isWin && t.cmdWin ? (
-                              <div>
-                                <div className="text-xs opacity-70 mb-2">Windows command</div>
-                                {renderCopy(t.cmdWin)}
-                              </div>
-                            ) : null}
-                            {isLinux && t.cmdLinux ? (
-                              <div>
-                                <div className="text-xs opacity-70 mb-2">Linux command</div>
-                                {renderCopy(t.cmdLinux)}
-                              </div>
-                            ) : null}
-                          </>
-                        ) : (
-                          <>
-                            {cmd ? (
-                              <div>
-                                <div className="text-xs opacity-70 mb-2">{platformLabel(tab as Platform)} command</div>
-                                {renderCopy(cmd)}
-                              </div>
-                            ) : (
-                              <div className="text-xs opacity-70">No command for this platform.</div>
-                            )}
+                        <div className="text-m text-sm opacity-90">{t.desc}</div>
 
-                            {tab === 'linux' && isWin && !isLinux ? (
-                              <div className="text-xs opacity-70">Windows only (shown under Linux tab filtered out by default).</div>
-                            ) : null}
-                          </>
-                        )}
+                        <div className="mt-4 space-y-3">
+                          {showWin && t.cmdWin ? <CmdBox platform="win" cmd={t.cmdWin} toolId={t.id} /> : null}
+                          {showLinux && t.cmdLinux ? <CmdBox platform="linux" cmd={t.cmdLinux} toolId={t.id} /> : null}
+
+                          {(!showWin && !showLinux) || (!t.cmdWin && !t.cmdLinux) ? (
+                            <div className="text-xs opacity-70">No command available for this filter.</div>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   )
@@ -195,3 +220,4 @@ export default function ToolsCatalog() {
     </section>
   )
 }
+
