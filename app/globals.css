@@ -76,3 +76,7 @@ body { background: var(--bg); color: var(--text); transition: background 0.3s, c
 .copy-btn:hover { background: #1f1f22; border-color: #444; }
 .copy-btn:active { transform: scale(0.97); }
 
+/* Utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
